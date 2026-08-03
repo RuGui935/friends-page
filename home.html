@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script>
+        // 检查 URL 参数里是否有 auth=ok
+        const urlParams = new URLSearchParams(window.location.search);
+        const auth = urlParams.get('auth');
+
+        // 如果没有 auth=ok，立刻跳回验证页
+        if (auth !== 'ok') {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🌻 时光不老 · 我们的角落</title>
+
+    <!-- ===== 全局样式 ===== -->
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Segoe UI', Roboto, sans-serif;
+            background: #fcf7f2;
+            color: #3d2c2c;
+            line-height: 1.6;
+            padding-top: 64px;
+            font-size: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        :root {
+            --primary: #dbb8a8;
+            --primary-light: #ede0d8;
+            --primary-dark: #c4a08e;
+            --bg-warm: #fcf7f2;
+            --card-bg: #ffffff;
+            --text-main: #3d2c2c;
+            --text-soft: #7a6a60;
+            --shadow-soft: 0 8px 30px rgba(180, 140, 120, 0.12);
+            --radius: 18px;
+            --nav-height: 64px;
+            --max-width: 720px;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(255, 248, 242, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 2px 20px rgba(180, 140, 120, 0.08);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(220, 190, 175, 0.15);
+        }
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 16px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--text-main);
+            padding: 4px 8px;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2px;
+            align-items: center;
+        }
+        .nav-menu li a {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-soft);
+            transition: all 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .nav-toggle {
+                display: block;
+            }
+            .nav-menu {
+                position: fixed;
+                top: var(--nav-height);
+                left: 0;
+                width: 100%;
+                background: rgba(255, 248, 242, 0.98);
+                backdrop-filter: blur(16px);
+                flex-direction: column;
+                padding: 12px 16px 24px;
+                gap: 2px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+                transform: translateY(-120%);
+                transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+                border-bottom: 1px solid rgba(220, 190, 175, 0.12);
+                border-radius: 0 0 24px 24px;
+            }
+            .nav-menu.open {
+                transform: translateY(0);
+            }
+            .nav-menu li a {
+                display: block;
+                padding: 12px 16px;
+                font-size: 16px;
+                width: 100%;
+                text-align: center;
+                border-radius: 14px;
+            }
+        }
+
+        /* ===== 主内容容器 ===== */
+        .main-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 16px 14px 32px;
+        }
+
+        /* ===== 页面板块（默认隐藏） ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .page-header span {
+            color: var(--text-soft);
+            font-size: 14px;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            text-align: center;
+            padding: 24px 16px 18px;
+            color: var(--text-soft);
+            font-size: 12px;
+            border-top: 1px solid rgba(220, 190, 175, 0.12);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        /* ===== 以下为各板块专属样式 ===== */
+
+        /* --- 首页 --- */
+        .hero {
+            text-align: center;
+            padding: 12px 0 20px;
+        }
+        .hero h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .hero-sub {
+            color: var(--text-soft);
+            font-size: 15px;
+            margin-top: 2px;
+        }
+        .hero-meta {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+        .hero-meta strong {
+            color: var(--text-main);
+            font-size: 17px;
+        }
+
+        .carousel-section {
+            margin: 4px 0 18px;
+        }
+        .carousel-container {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            background: var(--card-bg);
+            aspect-ratio: 16 / 9;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            height: 100%;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 16px 12px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-btn.prev {
+            left: 8px;
+        }
+        .carousel-btn.next {
+            right: 8px;
+        }
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .carousel-dots span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ddd0c8;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .carousel-dots span.active {
+            background: var(--primary);
+            width: 20px;
+            border-radius: 6px;
+        }
+
+        .daily-quote {
+            background: var(--primary-light);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            text-align: center;
+            color: var(--text-soft);
+            font-size: 14px;
+            margin: 4px 0 16px;
+            border-left: 4px solid var(--primary);
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- BGM 播放按钮 --- */
+        .bgm-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 8px 0 16px;
+            padding: 10px 16px;
+            background: #fff;
+            border-radius: 40px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(220, 190, 175, 0.1);
+        }
+        .bgm-btn {
+            background: var(--primary);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bgm-btn:active {
+            transform: scale(0.94);
+        }
+        .bgm-btn.playing {
+            background: var(--primary-dark);
+        }
+        .bgm-status {
+            font-size: 13px;
+            color: var(--text-soft);
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 6px 0 8px;
+        }
+        .quick-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 14px 8px 12px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.25s;
+            border: 1px solid rgba(220, 190, 175, 0.08);
+            cursor: pointer;
+        }
+        .quick-card:active {
+            transform: scale(0.96);
+        }
+        .quick-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .quick-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .quick-card p {
+            font-size: 11px;
+            color: var(--text-soft);
+            margin-top: 0;
+        }
+
+        @media (max-width: 420px) {
+            .quick-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .quick-card {
+                padding: 10px 4px;
+            }
+            .quick-icon {
+                font-size: 22px;
+            }
+            .quick-card h3 {
+                font-size: 12px;
+            }
+            .quick-card p {
+                font-size: 10px;
+            }
+        }
+
+        /* --- 我们（三角形） --- */
+        .triangle-section {
+            margin: 12px 0 8px;
+            padding: 12px 0 8px;
+        }
+        .triangle-container {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+            aspect-ratio: 1 / 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* ===== 三角形容器 ===== */
+.triangle-container {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+   /* ===== 三条连线 ===== */
+.triangle-lines,
+.triangle-line-extra {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 第1条线：A(顶部) → B(左下) */
+.triangle-lines::before {
+    content: '';
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: var(--primary);
+    opacity: 0.35;
+    transform: rotate(28deg);
+    transform-origin: top left;
+}
+
+/* 第2条线：A(顶部) → C(右下) */
+.triangle-lines::after {
+    content: '';
+    position: absolute;
+    top: 0%;
+    right: 50%;
+    width: 2px;
+    height: 100%;
+    background: var(--primary);
+    opacity: 0.35;
+    transform: rotate(-28deg);
+    transform-origin: top right;
+}
+
+/* 第3条线：B(左下) → C(右下) */
+.triangle-line-extra::before {
+    content: '';
+    position: absolute;
+    top: 83%;
+    left: 8%;
+    width: 84%;
+    height: 2px;
+    background: var(--primary);
+    opacity: 0.35;
+}
+        
+
+        /* ===== 头像节点 ===== */
+.avatar-node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.avatar-node:active {
+    transform: scale(0.92);
+}
+
+/* 顶部：朋友A */
+.avatar-node.top {
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.avatar-node.top:active {
+    transform: translateX(-50%) scale(0.92);
+}
+
+/* 左下：朋友B */
+.avatar-node.bottom-left {
+    bottom: -8px;
+    left: -8px;
+}
+
+/* 右下：朋友C */
+.avatar-node.bottom-right {
+    bottom: -8px;
+    right: -8px;
+}
+
+        /* ★★★ 关键：圆形头像 ★★★ */
+        .avatar-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 4px 16px rgba(180, 140, 120, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* ★ 强制裁切为正方形再圆形 ★ */
+            display: block;
+        }
+
+        .avatar-name {
+            margin-top: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            background: rgba(255, 248, 242, 0.85);
+            padding: 2px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .triangle-hint {
+            text-align: center;
+            color: var(--text-soft);
+            font-size: 13px;
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 420px) {
+            .triangle-container {
+                max-width: 280px;
+            }
+            .avatar-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+                border-width: 2.5px;
+            }
+            .avatar-name {
+                font-size: 11px;
+                padding: 1px 10px;
+            }
+        }
+        @media (max-width: 360px) {
+            .triangle-container {
+                max-width: 240px;
+            }
+            .avatar-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+                border-width: 2px;
+            }
+            .avatar-name {
+                font-size: 10px;
+                padding: 1px 8px;
+            }
+        }
+
+        /* --- 问卷 --- */
+        .survey-section {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1.5px solid rgba(220, 190, 175, 0.2);
+        }
+        .survey-section h2 {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .survey-intro {
+            color: var(--text-soft);
+            font-size: 14px;
+            margin: 2px 0 14px;
+        }
+        .survey-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .survey-item {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(220, 190, 175, 0.06);
+        }
+        .survey-question {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+        .survey-answers {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .survey-answers .answer {
+            font-size: 14px;
+            color: var(--text-soft);
+            line-height: 1.5;
+            padding: 2px 0;
+        }
+        .survey-answers .answer strong {
+            color: var(--text-main);
+        }
+
+        /* --- 时光轴 --- */
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .timeline-item {
+            display: flex;
+            gap: 14px;
+            background: #fff;
+            padding: 14px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(180, 140, 120, 0.08);
+            border-left: 4px solid var(--primary);
+        }
+        .timeline-year {
+            font-weight: 700;
+            color: var(--primary-dark);
+            min-width: 70px;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .timeline-desc {
+            color: var(--text-main);
+            font-size: 15px;
+        }
+        .timeline-desc small {
+            color: var(--text-soft);
+            font-size: 13px;
+            display: block;
+            margin-top: 2px;
+        }
+        @media (max-width: 420px) {
+            .timeline-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .timeline-year {
+                min-width: auto;
+            }
+        }
+
+        /* --- 相册（瀑布流） --- */
+        .filter-bar {
+            margin: 8px 0 14px;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 6px;
+            align-items: center;
+        }
+        .filter-label {
+            font-size: 13px;
+            color: var(--text-soft);
+            margin-right: 6px;
+            font-weight: 500;
+        }
+        .filter-btn {
+            background: #f5efef;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-soft);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+        .filter-btn:active {
+            transform: scale(0.94);
+        }
+
+        .masonry {
+            columns: 3;
+            column-gap: 10px;
+            padding: 4px 0;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 10px;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: 0.2s;
+            background: #f5efef;
+        }
+        .masonry-item:active {
+            transform: scale(0.97);
+        }
+        .masonry-item img {
+            width: 100%;
+            display: block;
+        }
+        .masonry-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 10px 8px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transition: 0.25s;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .masonry-item:hover .masonry-overlay {
+            opacity: 1;
+        }
+        @media (max-width: 500px) {
+            .masonry {
+                columns: 3;
+                column-gap: 6px;
+            }
+            .masonry-item {
+                margin-bottom: 6px;
+                border-radius: 10px;
+            }
+        }
+
+        /* --- 互动（选择题） --- */
+        .game-section {
+            margin: 16px 0 24px;
+        }
+        .game-section h2 {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .game-section .sub {
+            color: var(--text-soft);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 16px rgba(180, 140, 120, 0.06);
+        }
+        .quiz-question {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .quiz-option {
+            background: #f9f5f5;
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            color: var(--text-soft);
+            border: 1.5px solid transparent;
+        }
+        .quiz-option:active {
+            transform: scale(0.97);
+        }
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--text-main);
+        }
+        .quiz-option.correct {
+            border-color: #7bc0a0;
+            background: #e6f5ed;
+            color: #2a7a5a;
+        }
+        .quiz-option.wrong {
+            border-color: #e0a0a0;
+            background: #f5e6e6;
+            color: #a05050;
+        }
+        .quiz-option.disabled {
+            pointer-events: none;
+        }
+        .quiz-feedback {
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: none;
+        }
+        .quiz-feedback.show {
+            display: block;
+        }
+        .quiz-feedback.correct {
+            background: #e6f5ed;
+            color: #2a7a5a;
+        }
+        .quiz-feedback.wrong {
+            background: #f5e6e6;
+            color: #a05050;
+        }
+
+        /* --- 许愿池（过往的信） --- */
+        .letter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .letter-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(180, 140, 120, 0.06);
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+        .letter-item .letter-meta {
+            font-size: 12px;
+            color: var(--text-soft);
+            margin-bottom: 4px;
+        }
+        .letter-item .letter-text {
+            font-size: 15px;
+            color: var(--text-main);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .letter-item .letter-from {
+            font-size: 13px;
+            color: var(--primary-dark);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* --- 模态框 --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #fffaf7;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 100%;
+            padding: 32px 28px 28px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-soft);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+        .modal-person {
+            text-align: center;
+        }
+        .modal-person .modal-avatar {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .modal-person h2 {
+            font-size: 22px;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+        .modal-divider {
+            width: 40px;
+            height: 2.5px;
+            background: var(--primary);
+            margin: 8px auto 14px;
+            border-radius: 4px;
+        }
+        .modal-person .modal-desc {
+            font-size: 15px;
+            color: var(--text-soft);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+        .modal-person .modal-message {
+            background: var(--primary-light);
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 15px;
+            color: var(--text-main);
+            border-left: 4px solid var(--primary);
+            text-align: left;
+        }
+        .modal-photo {
+            max-width: 460px;
+        }
+        .modal-photo img {
+            width: 100%;
+            max-height: 50vh;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* ===== 歌曲板块 ===== */
+.music-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0 16px;
+}
+
+.music-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(180,140,120,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+.music-item:active {
+    transform: scale(0.97);
+}
+.music-item.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+.music-item .icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+.music-item .info {
+    flex: 1;
+}
+.music-item .title {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 15px;
+}
+.music-item .artist {
+    font-size: 12px;
+    color: var(--text-soft);
+}
+.music-item .badge {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* 播放器 */
+.music-player {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 20px rgba(180,140,120,0.08);
+    margin: 8px 0 16px;
+    border: 1px solid rgba(220,190,175,0.08);
+}
+.music-cover {
+    font-size: 36px;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.music-info {
+    flex: 1;
+    min-width: 0;
+}
+.music-title {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.music-artist {
+    font-size: 13px;
+    color: var(--text-soft);
+}
+.music-play-btn {
+    background: var(--primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.music-play-btn:active {
+    transform: scale(0.92);
+}
+
+/* 歌词 */
+.lyrics-container {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    min-height: 120px;
+    box-shadow: 0 4px 20px rgba(180,140,120,0.06);
+    border-left: 4px solid var(--primary);
+    font-size: 15px;
+    color: var(--text-main);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.lyrics-placeholder {
+    color: var(--text-soft);
+    text-align: center;
+    padding: 12px 0;
+}
+    </style>
+</head>
+<body>
+
+    <!-- ===== 背景音乐（隐藏） ===== -->
+    <audio id="bgm" loop preload="auto">
+        <source src="bgm/background.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ===== 导航栏 ===== -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+            <img src="assets/logo.png" alt="logo" style="height:50px;width:auto;vertical-align:middle;margin-right:1px;">时光不老
+            </div>
+            <button class="nav-toggle" id="navToggle">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a data-page="page-home">🏠 首页</a></li>
+                <li><a data-page="page-friends">🔼 我们</a></li>
+                <li><a data-page="page-timeline">📅 时光轴</a></li>
+                <li><a data-page="page-gallery">🖼️ 相册</a></li>
+                <li><a data-page="page-music">🎵 歌曲</a></li>   <!-- ← 新加 -->
+                <li><a data-page="page-game">🎮 互动</a></li>
+                <li><a data-page="page-wish">🌟 许愿池</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== 主内容 ===== -->
+    <main class="main-content">
+
+        <!-- ============================================================ -->
+        <!-- 首页 -->
+        <!-- ============================================================ -->
+        <div class="page active" id="page-home">
+            <section class="hero">
+                <h1>🌻 欢迎来到我们的角落</h1>
+                <p class="hero-sub">这里存着一些光，一些笑，和一些不想忘的瞬间</p>
+                <div class="hero-meta">
+                    <span>📆 认识 <strong id="yearsCount">0</strong> 年了</span>
+                    <span>💛 收集了 <strong id="memoryCount">0</strong> 个回忆</span>
+                </div>
+            </section>
+
+            <!-- 轮播 -->
+            <section class="carousel-section">
+                <div class="carousel-container" id="carousel">
+                    <div class="carousel-track" id="carouselTrack">
+                        <div class="carousel-slide"><img src="assets/banner1.jpeg" alt="回忆1" onerror="this.outerHTML='<div style=\'background:#f0e4dc;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;\'>🌅</div>'"><div class="slide-caption">秋千合照</div></div>
+                        <div class="carousel-slide"><img src="assets/banner2.jpeg" alt="回忆2" onerror="this.outerHTML='<div style=\'background:#f0e4dc;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;\'>☀️</div>'"><div class="slide-caption">那日天空很蓝</div></div>
+                        <div class="carousel-slide"><img src="assets/banner3.jpeg" alt="回忆3" onerror="this.outerHTML='<div style=\'background:#f0e4dc;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;\'>☕️</div>'"><div class="slide-caption">毕业季</div></div>
+                    </div>
+                    <button class="carousel-btn prev" id="carouselPrev">‹</button>
+                    <button class="carousel-btn next" id="carouselNext">›</button>
+                </div>
+                <div class="carousel-dots" id="carouselDots"></div>
+            </section>
+
+            <!-- BGM 播放按钮（明示） -->
+            <div class="bgm-control">
+                <button class="bgm-btn" id="bgmBtn">🎵 伴着BGM阅读更好哦</button>
+                <span class="bgm-status" id="bgmStatus">● 点击播放</span>
+            </div>
+
+            <!-- 今日一言 -->
+            <section class="daily-quote"><p id="dailyQuote">💫 “最好的关系，是各自忙碌又互相惦记。”</p></section>
+
+            <!-- 快捷入口 -->
+            <section class="quick-grid">
+                <div class="quick-card" data-page="page-friends"><span class="quick-icon">🔼</span><h3>我们</h3><p>三个人的故事</p></div>
+                <div class="quick-card" data-page="page-timeline"><span class="quick-icon">📅</span><h3>时光轴</h3><p>串起重要时刻</p></div>
+                <div class="quick-card" data-page="page-gallery"><span class="quick-icon">🖼️</span><h3>相册</h3><p>每一张都是故事</p></div>
+                <div class="quick-card" data-page="page-music"><span class="quick-icon">🎵</span><h3>音乐</h3><p>属于我们的歌曲</p></div>
+                <div class="quick-card" data-page="page-game"><span class="quick-icon">🎮</span><h3>互动</h3><p>回忆挑战+彩蛋</p></div>
+                <div class="quick-card" data-page="page-wish"><span class="quick-icon">🌟</span><h3>许愿池</h3><p>未来约定·胶囊</p></div>
+            </section>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 我们 -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-friends">
+            <div class="page-header"><h1>🔼 我们</h1><span>三个人，一个三角形</span></div>
+
+            <section class="triangle-section">
+                <div class="triangle-container">
+                <!-- 三条连线 -->
+                <div class="triangle-lines"></div>
+                <div class="triangle-line-extra"></div>
+
+                <!-- 头像 A（顶部） -->
+                <div class="avatar-node top" data-person="A">
+                    <div class="avatar-circle"><img src="assets/avatarA.jpg" alt="A" onerror="this.outerHTML='<span style=\'font-size:40px;\'>🦊</span>'"></div>
+                    <span class="avatar-name">大龙虾</span>
+                </div>
+
+                <!-- 头像 B（左下） -->
+                <div class="avatar-node bottom-left" data-person="B">
+                    <div class="avatar-circle"><img src="assets/avatarB.jpg" alt="B" onerror="this.outerHTML='<span style=\'font-size:40px;\'>🐱</span>'"></div>
+                    <span class="avatar-name">小龙虾</span>
+                </div>
+
+                <!-- 头像 C（右下） -->
+                <div class="avatar-node bottom-right" data-person="C">
+                    <div class="avatar-circle"><img src="assets/avatarC.jpg" alt="C" onerror="this.outerHTML='<span style=\'font-size:40px;\'>🐰</span>'"></div>
+                    <span class="avatar-name">小小龙虾</span>
+                </div>
+            </div>
+                <p class="triangle-hint">👆 点击头像，看看我想对TA说的话</p>
+            </section>
+
+            <!-- 问卷 -->
+            <section class="survey-section">
+                <h2>📝 关于我们，TA们说</h2>
+                <p class="survey-intro">我问了她们几个问题，答案在这里——</p>
+                <div class="survey-list">
+                    <div class="survey-item">
+                        <div class="survey-question">🌱 你印象最深的一次三个人一起做的事是什么？</div>
+                        <div class="survey-answers"><div class="answer"><strong>A：</strong>（A的回答）</div><div class="answer"><strong>B：</strong>（B的回答）</div><div class="answer"><strong>C：</strong>（C的回答）</div></div>
+                    </div>
+                    <div class="survey-item">
+                        <div class="survey-question">💬 你觉得我们三个人之间最像什么？</div>
+                        <div class="survey-answers"><div class="answer"><strong>A：</strong>（A的回答）</div><div class="answer"><strong>B：</strong>（B的回答）</div><div class="answer"><strong>C：</strong>（C的回答）</div></div>
+                    </div>
+                    <div class="survey-item">
+                        <div class="survey-question">🌟 你希望我们十年后在哪里？</div>
+                        <div class="survey-answers"><div class="answer"><strong>A：</strong>（A的回答）</div><div class="answer"><strong>B：</strong>（B的回答）</div><div class="answer"><strong>C：</strong>（C的回答）</div></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 时光轴 -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-timeline">
+            <div class="page-header"><h1>📅 时光轴</h1><span>把重要的日子串起来</span></div>
+            <p style="color:var(--text-soft);font-size:14px;margin-bottom:8px;">日期不太精确，但记忆是真实的。</p>
+            <div class="timeline-list">
+                <div class="timeline-item"><span class="timeline-year">约 2012 年</span><div class="timeline-desc">在小学二年级的教室里，我们认识了。<small>大概吧，反正就是那时候。</small></div></div>
+                <div class="timeline-item"><span class="timeline-year">2012年<hr style="width: 50px;">2017年</span><div class="timeline-desc">相识之后，我们无数次汇聚在小龙虾家里玩乐，角色扮演、斗地主、大富翁...体验简单而纯粹的快乐。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2017 年 夏</span><div class="timeline-desc">小学毕业了，但我们还在联系。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2019 年 夏</span><div class="timeline-desc">那天是小龙虾的生日，我们一起庆祝，还在防洪堤上拍下了许多背景是蓝天的照片，其中有一张被我们用来做群头像。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2020 年 秋</span><div class="timeline-desc">第一次三个人去沧海湖，并在秋千上拍下了一张很好看的照片。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2021 年 冬</span><div class="timeline-desc">那天是大龙虾的生日，我们录下了拆礼物的过程，还一起在她家吃了火锅。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2021 年 冬</span><div class="timeline-desc">第一次体验沧海湖的三人单车，并在新年立牌前拍了个照。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2022 年 夏</span><div class="timeline-desc">那天是生日会，为庆祝小龙虾和小小龙虾的生日，也为我们的友谊十周年，大龙虾准备了好多惊喜。我们一起录制了vlog，留下了许多珍贵的回忆。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2023 年 冬<hr><div>01-14</div></span><div class="timeline-desc">重返沧海湖，重温三人单车的快乐时刻，并在台阶前打了好几局斗地主。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2023 年 冬</span><div class="timeline-desc">那天我们先到白云山，在新建好的西江明珠塔下，在新年的立牌前拍了合照，还在下山时cos了西游记师徒三人。下午是我们第一次三个人去ktv，六个小时的时长足够尽兴，并在太阳落山悄然时将话题延续到了深夜。</div></div>
+                <div class="timeline-item"><span class="timeline-year">2023 年 冬</span><div class="timeline-desc">那个时候太阳很大，却并不炙热，阳光下我们一边烧烤，一边畅聊。<small>那是我们第一次烧烤。</small></div></div>
+                <div class="timeline-item"><span class="timeline-year">2026 年 夏</span><div class="timeline-desc">这个网页诞生了。🌱<small>某个人花了很久才把它搭好。</small></div></div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 相册 -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-gallery">
+            <div class="page-header"><h1>🖼️ 相册</h1><span>每一张都是一个故事</span></div>
+
+            <div class="filter-bar">
+                <div class="filter-group"><span class="filter-label">📅 时间</span>
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="2026">2026</button>
+                    <button class="filter-btn" data-filter="2025">2025</button>
+                    <button class="filter-btn" data-filter="2024">2024</button>
+                    <button class="filter-btn" data-filter="older">更早</button>
+                </div>
+                <div class="filter-group"><span class="filter-label">👤 人数</span>
+                    <button class="filter-btn active" data-people="all">全部</button>
+                    <button class="filter-btn" data-people="3">三人</button>
+                    <button class="filter-btn" data-people="2">二人</button>
+                    <button class="filter-btn" data-people="1">单人</button>
+                    <button class="filter-btn" data-people="multi">多人</button>
+                </div>
+            </div>
+
+            <div class="masonry" id="masonryGrid"></div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 歌曲 -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-music">
+            <div class="page-header"><h1>🎵 歌曲</h1><span>我们的背景音乐</span></div>
+
+            <!-- 歌曲列表 -->
+            <div class="music-list" id="musicList">
+                <!-- 由 JS 动态生成 -->
+            </div>
+
+            <!-- 当前播放 + 歌词 -->
+            <div class="music-player" id="musicPlayer">
+                <div class="music-cover" id="musicCover">🎶</div>
+                <div class="music-info">
+                    <div class="music-title" id="musicTitle">background</div>
+                    <div class="music-artist" id="musicArtist">时光不老</div>
+                </div>
+                <div class="music-controls">
+                    <button class="music-play-btn" id="musicPlayBtn">⏸️</button>
+                </div>
+            </div>
+
+            <!-- 歌词区域 -->
+            <div class="lyrics-container" id="lyricsContainer">
+                <div class="lyrics-placeholder">🎵 点击列表中的歌曲，歌词会显示在这里</div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 互动（选择题） -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-game">
+            <div class="page-header"><h1>🎮 互动</h1><span>来玩点不一样的</span></div>
+
+            <!-- 第一部分：随机回忆抽签 -->
+            <section class="game-section">
+                <h2>✨ 回忆抽签</h2>
+                <p class="sub">点一下，随机掉出一条我们的回忆</p>
+                <button class="bgm-btn" id="randomMemoryBtn" style="background:var(--primary);border:none;padding:14px 32px;border-radius:40px;font-size:17px;font-weight:600;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(200,160,140,0.3);">🎲 给我一条回忆</button>
+                <div style="background:#fff;border-radius:16px;padding:20px 22px;min-height:70px;margin-top:12px;box-shadow:0 4px 16px rgba(180,140,120,0.06);border-left:4px solid var(--primary);font-size:15px;color:var(--text-main);line-height:1.7;" id="memoryDisplay">👆 点上面试试</div>
+            </section>
+
+            <!-- 第二部分：选择题 -->
+            <section class="game-section">
+                <h2>🤝 默契大考验</h2>
+                <p class="sub">点击选项，看看我们的答案是否一致</p>
+
+                <div class="quiz-item" data-quiz="0">
+                    <div class="quiz-question">❓ 谁最怕黑？</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="false">A. 朋友A</div>
+                        <div class="quiz-option" data-correct="true">B. 朋友B</div>
+                        <div class="quiz-option" data-correct="false">C. 朋友C</div>
+                    </div>
+                    <div class="quiz-feedback">✅ 没错！B 是最怕黑的，她说小时候被吓到过。</div>
+                </div>
+
+                <div class="quiz-item" data-quiz="1">
+                    <div class="quiz-question">❓ 谁最会安慰人？</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="true">A. 朋友A</div>
+                        <div class="quiz-option" data-correct="false">B. 朋友B</div>
+                        <div class="quiz-option" data-correct="false">C. 朋友C</div>
+                    </div>
+                    <div class="quiz-feedback">✅ 对啦！A 总是能察觉到别人的情绪，然后用最温柔的方式接住。</div>
+                </div>
+
+                <div class="quiz-item" data-quiz="2">
+                    <div class="quiz-question">❓ 我们三个谁最可能忘记带钥匙？</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="true">A. 朋友A</div>
+                        <div class="quiz-option" data-correct="false">B. 朋友B</div>
+                        <div class="quiz-option" data-correct="false">C. 朋友C</div>
+                    </div>
+                    <div class="quiz-feedback">✅ 哈哈，A 自己都承认了，经常忘带钥匙被锁在门外。</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 许愿池 · 时间胶囊 + 曾经的信 -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-wish">
+            <div class="page-header"><h1>🌟 许愿池</h1><span>时间胶囊 · 曾经的信</span></div>
+
+            <!-- ===== 第一部分：时间胶囊（愿望） ===== -->
+            <section style="margin-bottom: 28px;">
+                <h2 style="font-size:18px;font-weight:600;color:var(--text-main);margin-bottom:4px;">⏳ 时间胶囊</h2>
+                <p style="color:var(--text-soft);font-size:14px;margin-bottom:12px;">我们曾经说过的愿望，都封存在这里。</p>
+
+                <div class="letter-list">
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2024 年 · 夏天</div>
+                        <div class="letter-text">“希望十年后我们还在彼此身边。”</div>
+                        <div class="letter-from">—— 猫猫</div>
+                    </div>
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2025 年 · 冬天</div>
+                        <div class="letter-text">“想一起去一次雪山，看漫天大雪。”</div>
+                        <div class="letter-from">—— 朋友A</div>
+                    </div>
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2026 年 · 这个夏天</div>
+                        <div class="letter-text">“无论走到哪里，我们都是彼此的后盾。”</div>
+                        <div class="letter-from">—— 朋友B</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== 第二部分：曾经的信 ===== -->
+            <section>
+                <h2 style="font-size:18px;font-weight:600;color:var(--text-main);margin-bottom:4px;">💌 曾经的信</h2>
+                <p style="color:var(--text-soft);font-size:14px;margin-bottom:12px;">那些年我们写给彼此的话，纸质版的记忆。</p>
+
+                <div class="letter-list">
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2022 年 · 夏天</div>
+                        <div class="letter-text">“致：时光不老的我们
+        我们仨，从二年级到现在已经十年了吧!一直想找过个机会，过十年之约，但总是没有时间，这次就一起过了啊！我非常的希望我们高考的毕业旅能落实到位，一定要实现，除了自然的阻碍，剩下的不可阻挡你们能做到吗？
+        签字画押：刘柳丽（2022.6.1）、易泳妍（2022.6.3）、李燕娜（2022.6.3）
+        2031年是下一个十年，我希望，我身边多了别人的同时，回头再望，我们仨还在一起！那个时候，我们大概就28岁了，不管那个时候，我们仨作了，28岁都约出来,回望我们的时光.履行约定
+        一式三份，28岁见。”</div>
+                         <!-- ===== 信的图片（原图） ===== -->
+                        <div style="margin: 10px auto 6px; text-align: center;">
+                            <img src="assets/letter-2022.jpg" alt="2022年写的信"
+                                style="max-width: 200px; width: 60%; height: auto; border-radius: 12px; box-shadow: 0 4px 16px rgba(180,140,120,0.1); border: 1px solid rgba(220,190,175,0.15); cursor: pointer;"
+                                onclick="openLetterImage(this.src)">
+                        </div>
+                        <div class="letter-from">—— 大龙虾 写给 我们</div>
+                    </div>
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2024 年 · 春天</div>
+                        <div class="letter-text">“你画画的时候会哼歌，那首歌我偷偷记下来了。后来每次听到，都会想起你。”</div>
+                        <div class="letter-from">—— B 写给 猫猫</div>
+                    </div>
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2025 年 · 夏天</div>
+                        <div class="letter-text">“那天风很大，帽子差点被吹跑，但你拉着我的手说‘跑起来’。我到现在还记得那个瞬间。”</div>
+                        <div class="letter-from">—— A 写给 我们</div>
+                    </div>
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2026 年 · 现在</div>
+                        <div class="letter-text">“这个网页是我们一起送给未来的礼物。如果你在 2036 年看到它，记得笑一下。”</div>
+                        <div class="letter-from">—— 我们仨</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- ===== 页脚 ===== -->
+     
+    <footer class="footer"><p>🌻 时光不老 · 我们不散 · 2026</p></footer>
+
+    <!-- ===== 模态框（共用） ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        // ================================================================
+        // 0. 数据
+        // ================================================================
+
+        // 朋友数据
+        const friendsData = {
+            A: { name: '大龙虾', emoji: '🐑', description: '她是一个热烈得像太阳一样的人。身怀勇气与自信，灿烂明媚。',
+                message: '愿你永远灿烂奔放，手握利剑，披巾斩棘。' },
+            B: { name: '小龙虾', emoji: '🐢', description: '她似乎她总是安静地观察世界，把喜欢的东西画进画里。那些没说出的话，都藏在颜色里了。',
+                message: '你不用变成一个很会说话的人。你做的那些事、记着那些细节，已经是很好的‘表达’了。希望你能慢慢相信：你本来就值得被留在别人的生活里。' },
+            C: { name: '小小龙虾', emoji: '🐱', description: '她看起来酷酷的，其实心思细腻，不常主动开口，',
+                message: '你画画时哼的那首歌，我偷偷记下来了。' }
+        };
+
+        // 回忆池
+        const memories = [
+            '🌊 那天在海边，风把我们三个的帽子都吹跑了',
+            '🍜 深夜一起吃泡面，你加了火腿肠，我加了蛋',
+            '📱 凌晨三点还在聊废话，第二天全都在课上睡着了',
+            '🎂 生日那天你偷偷把蛋糕藏在我柜子里，发现的时候已经化了',
+            '☔️ 下雨天三个人挤一把伞，全都淋湿了还在笑',
+            '📖 你借我的那本书，里面夹了一张纸条，我一直留着',
+            '🌙 那个夜晚我们躺在操场上看星星，谁都没说话',
+            '🚌 一起坐公交车坐过站了，干脆就去吃了顿火锅'
+        ];
+
+        // 相册数据
+        const photos = [
+            { src: 'assets/photo/1.jpg', alt: '晚餐时刻', year: '2024', people: 3,
+            story: '烧烤的前一天晚上，忙活完的我们去吃了一煲艇仔粥。' },
+            { src: 'assets/photo/2.jpg', alt: '包车时刻', year: '2024', people: 3,
+                story: '那天我们放完烟花，回去的路上包了一辆车。' },
+            { src: 'assets/photo/3.jpg', alt: '咖啡店', year: '2025', people: 1,
+                story: '窗边的位置，我们坐了一整个下午。' },
+            { src: 'assets/photo/4.jpg', alt: '毕业照', year: 'older', people: 'multi',
+                story: '小学毕业那天，我们还没意识到后来会走散又重逢。' },
+            { src: 'assets/photo/5.jpg', alt: '三人自拍', year: '2026', people: 3,
+                story: '今年夏天，我们还在彼此身边。' },
+            { src: 'assets/photo/6.jpg', alt: '夜晚小路', year: '2025', people: 2,
+                story: '那条路走了无数遍，还是觉得不够长。' }
+        ];
+
+        // ================================================================
+        // 1. 导航切换（单页）
+        // ================================================================
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        const pages = {
+            home: document.getElementById('page-home'),
+            friends: document.getElementById('page-friends'),
+            timeline: document.getElementById('page-timeline'),
+            gallery: document.getElementById('page-gallery'),
+            music: document.getElementById('page-music'),   // ← 新加
+            game: document.getElementById('page-game'),
+            wish: document.getElementById('page-wish')
+        };
+
+        function switchPage(pageId) {
+            // 隐藏所有
+            Object.values(pages).forEach(p => p.classList.remove('active'));
+            // 显示目标
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            // 导航高亮
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
+            // 关闭移动端菜单
+            document.getElementById('navMenu').classList.remove('open');
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.dataset.page;
+                if (pageId) switchPage(pageId);
+            });
+        });
+
+        // 快捷卡片点击
+        document.querySelectorAll('.quick-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                if (pageId) switchPage(pageId);
+            });
+        });
+
+        // 移动端菜单开关
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('open');
+        });
+
+        // ================================================================
+        // 2. 背景音乐
+        // ================================================================
+        const bgm = document.getElementById('bgm');
+        const bgmBtn = document.getElementById('bgmBtn');
+        const bgmStatus = document.getElementById('bgmStatus');
+        let isPlaying = false;
+
+        function toggleBgm() {
+            if (isPlaying) {
+                bgm.pause();
+                isPlaying = false;
+                bgmBtn.textContent = '🎵 伴着BGM阅读更好哦';
+                bgmBtn.classList.remove('playing');
+                bgmStatus.textContent = '● 已暂停';
+            } else {
+                bgm.play().then(() => {
+                    isPlaying = true;
+                    bgmBtn.textContent = '🎵 播放中...';
+                    bgmBtn.classList.add('playing');
+                    bgmStatus.textContent = '● 正在播放';
+                }).catch(() => {
+                    bgmStatus.textContent = '⚠️ 请点击页面任意位置后重试';
+                });
+            }
+        }
+
+        bgmBtn.addEventListener('click', toggleBgm);
+
+        // 用户首次点击页面任意位置时自动播放（绕过浏览器限制）
+        document.addEventListener('click', function firstClick() {
+            if (!isPlaying) {
+                bgm.play().then(() => {
+                    isPlaying = true;
+                    bgmBtn.textContent = '🎵 播放中...';
+                    bgmBtn.classList.add('playing');
+                    bgmStatus.textContent = '● 正在播放';
+                }).catch(() => {});
+            }
+            document.removeEventListener('click', firstClick);
+        }, { once: true });
+
+        // ================================================================
+        // 3. 轮播
+        // ================================================================
+        const track = document.getElementById('carouselTrack');
+        const dots = document.getElementById('carouselDots');
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+
+        if (track && dots) {
+            const slides = track.querySelectorAll('.carousel-slide');
+            const total = slides.length;
+            let current = 0;
+            let autoTimer = null;
+
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('span');
+                if (i === 0) dot.classList.add('active');
+                dot.dataset.index = i;
+                dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index));
+                    resetAuto(); });
+                dots.appendChild(dot);
+            }
+
+            function goTo(index) {
+                if (index < 0) index = total - 1;
+                if (index >= total) index = 0;
+                current = index;
+                track.style.transform = 'translateX(-' + (current * 100) + '%)';
+                document.querySelectorAll('.carousel-dots span').forEach((d, i) => {
+                    d.classList.toggle('active', i === current);
+                });
+            }
+
+            function next() { goTo(current + 1); }
+
+            function prev() { goTo(current - 1); }
+
+            function startAuto() { stopAuto();
+                autoTimer = setInterval(next, 4000); }
+
+            function stopAuto() { if (autoTimer) { clearInterval(autoTimer);
+                    autoTimer = null; } }
+
+            function resetAuto() { stopAuto();
+                startAuto(); }
+
+            prevBtn.addEventListener('click', function() { prev();
+                resetAuto(); });
+            nextBtn.addEventListener('click', function() { next();
+                resetAuto(); });
+
+            // 触摸滑动
+            let touchX = 0;
+            const container = document.querySelector('.carousel-container');
+            container.addEventListener('touchstart', function(e) { touchX = e.changedTouches[0].screenX; }, { passive: true });
+            container.addEventListener('touchend', function(e) {
+                const diff = touchX - e.changedTouches[0].screenX;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0) { next();
+                        resetAuto(); } else { prev();
+                        resetAuto(); }
+                }
+            }, { passive: true });
+
+            startAuto();
+        }
+
+        // ================================================================
+        // 4. 首页数据
+        // ================================================================
+        const yearsSpan = document.getElementById('yearsCount');
+        if (yearsSpan) {
+            const startYear = 2012;
+            const currentYear = new Date().getFullYear();
+            yearsSpan.textContent = currentYear - startYear;
+        }
+        document.getElementById('memoryCount').textContent = '999';
+
+        // 今日一言
+        const quotes = [
+            '💫 “最好的关系，是各自忙碌又互相惦记。”',
+            '🌙 “月亮不会发光，但它借了太阳的光，照亮了我们的夜。”',
+            '☕️ “有些话不用说出来，因为我们都懂。”',
+            '🌸 “你是我在人间捡到的宝藏。”',
+            '🌊 “海风记得我们说过的话。”',
+            '🍜 “一起吃过泡面的夜晚，比任何大餐都暖和。”',
+            '📖 “我们各自写着自己的故事，但有一章是共同的。”',
+            '✨ “时间在走，我们在变，但有些东西不会。”'
+        ];
+        document.getElementById('dailyQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+        // ================================================================
+        // 5. 我们（三角形弹窗）
+        // ================================================================
+        const modal = document.getElementById('modalOverlay');
+        const modalContent = document.getElementById('modalContent');
+        const modalClose = document.getElementById('modalClose');
+
+        function closeModal() { modal.classList.remove('active'); }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+        document.querySelectorAll('.avatar-node').forEach(function(node) {
+            node.addEventListener('click', function() {
+                const data = friendsData[this.dataset.person];
+                if (!data) return;
+                modalContent.innerHTML = `
+                    <div class="modal-person">
+                        <div class="modal-avatar">${data.emoji}</div>
+                        <h2>${data.name}</h2>
+                        <div class="modal-divider"></div>
+                        <p class="modal-desc">${data.description}</p>
+                        <div class="modal-message">💌 ${data.message}</div>
+                    </div>
+                `;
+                document.getElementById('modalBox').className = 'modal-box';
+                modal.classList.add('active');
+            });
+        });
+
+        // ================================================================
+        // 6. 相册（瀑布流 + 筛选）
+        // ================================================================
+        const masonryGrid = document.getElementById('masonryGrid');
+
+        function renderPhotos(filterYear = 'all', filterPeople = 'all') {
+            const filtered = photos.filter(p => {
+                const matchYear = filterYear === 'all' || p.year === filterYear;
+                const matchPeople = filterPeople === 'all' || p.people == filterPeople;
+                return matchYear && matchPeople;
+            });
+            if (filtered.length === 0) {
+                masonryGrid.innerHTML =
+                    '<p style="grid-column:1/-1;text-align:center;color:var(--text-soft);padding:40px 0;">没有找到符合条件的照片～</p>';
+                return;
+            }
+            masonryGrid.innerHTML = filtered.map((p, i) => `
+                <div class="masonry-item" data-index="${i}" data-src="${p.src}" data-alt="${p.alt}" data-year="${p.year}" data-people="${p.people}" data-story="${p.story}">
+                    <img src="${p.src}" alt="${p.alt}" loading="lazy" onerror="this.style.display='none'">
+                    <div class="masonry-overlay"><span>${p.alt}</span></div>
+                </div>
+            `).join('');
+
+            // 点击弹窗看大图+故事
+            document.querySelectorAll('.masonry-item').forEach(el => {
+                el.addEventListener('click', function() {
+                    const src = this.dataset.src;
+                    const alt = this.dataset.alt;
+                    const year = this.dataset.year;
+                    const people = this.dataset.people;
+                    const story = this.dataset.story;
+                    modalContent.innerHTML = `
+                        <div style="text-align:center;">
+                            <img src="${src}" alt="${alt}" style="width:100%;max-height:50vh;object-fit:contain;border-radius:12px;margin-bottom:12px;">
+                            <h3 style="font-size:18px;color:var(--text-main);">${alt}</h3>
+                            <p style="color:var(--text-soft);font-size:14px;margin:4px 0;">📅 ${year} · 👤 ${people}人</p>
+                            <div style="background:var(--primary-light);border-radius:12px;padding:12px 16px;margin-top:8px;color:var(--text-main);font-size:14px;">💬 ${story}</div>
+                        </div>
+                    `;
+                    document.getElementById('modalBox').className = 'modal-box modal-photo';
+                    modal.classList.add('active');
+                });
+            });
+        }
+
+        // 筛选事件
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const parent = this.closest('.filter-group');
+                parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const year = document.querySelector('.filter-group:first-child .filter-btn.active')?.dataset
+                    .filter || 'all';
+                const people = document.querySelector('.filter-group:last-child .filter-btn.active')?.dataset
+                    .people || 'all';
+                renderPhotos(year, people);
+            });
+        });
+
+        renderPhotos();
+
+        // ================================================================
+        // 7. 互动 - 随机回忆
+        // ================================================================
+        document.getElementById('randomMemoryBtn').addEventListener('click', function() {
+            const random = memories[Math.floor(Math.random() * memories.length)];
+            document.getElementById('memoryDisplay').innerHTML = `✨ ${random}`;
+        });
+
+        // ================================================================
+        // 8. 互动 - 选择题（点击选项显示正误）
+        // ================================================================
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const parent = this.closest('.quiz-item');
+                // 如果已经选过了，不重复处理
+                if (this.classList.contains('disabled')) return;
+
+                // 禁用所有选项
+                parent.querySelectorAll('.quiz-option').forEach(opt => opt.classList.add('disabled'));
+
+                const isCorrect = this.dataset.correct === 'true';
+                const feedback = parent.querySelector('.quiz-feedback');
+
+                if (isCorrect) {
+                    this.classList.add('correct');
+                    feedback.className = 'quiz-feedback show correct';
+                } else {
+                    this.classList.add('wrong');
+                    // 显示正确答案
+                    parent.querySelectorAll('.quiz-option').forEach(opt => {
+                        if (opt.dataset.correct === 'true') opt.classList.add('correct');
+                    });
+                    feedback.className = 'quiz-feedback show wrong';
+                }
+            });
+        });
+
+        console.log('🌻 时光不老 · 已加载');
+
+        // ================================================================
+// 歌曲板块
+// ================================================================
+const musicData = [
+    {
+        id: 'bgm1',
+        name: '《路长长，光灿灿》',
+        artist: '作词作曲：AI、调试：小龙虾、鸣谢：小小龙虾',
+        file: 'bgm/background.mp3',
+        // cover: '🎵',
+        coverImg: 'assets/background.jpg',
+        lyrics: `(前奏)
+(主歌)
+校园爬着青绿藤蔓 某次无意擦肩便结伴同肩
+校服兜着细碎笑谈 檐下嬉闹不散年少时光缓
+眼底藏温软 静看人间烟火淡
+心事轻敛 脾性柔和少波澜
+眉眼载烂漫 一身鲜活雀欢
+三抹青涩身影 同栖一片蓝天
+(预副歌)
+长路分割各处站点 山海拉开遥远区间岁岁奔赴相见
+距离织成温柔牵连 思念不必多言深浅自有分辨
+流云三两 各浮一方天边
+(副歌)
+轻云浮过岁月堤岸 风散又缓缓归畔一晃十年如烟
+火锅漫烟 歌厅灯暖
+镜头收纳无数灿烂 羁绊从未中断
+岁岁流云 遥遥长久作伴
+(主歌)
+烟火漫上餐盘瓷边 彩光摇晃歌厅隔间举麦肆意畅谈
+棱角随时光慢慢舒展 沉默心事慢慢搁浅相逢笑意仍然
+市集留影 雨中共撑伞
+岁岁定格温暖片段
+(桥段)
+各自奔赴平凡人间 内敛热烈淡然各守岁岁流年
+相隔城市也无缺憾 重逢满肩热闹不必刻意寒暄
+十余年春秋兜转 三两流云未曾走散
+无需多余铺垫 眼底藏着默契答案
+(副歌)
+流云漫过岁月堤岸 风散又缓缓归畔归时满身晴朗
+火锅漫烟 歌厅灯暖
+镜头收纳无数灿烂 羁绊从未中断
+岁岁流云 遥遥长久作伴
+风漫漫 云缓缓
+(尾奏)`
+    },
+    {
+        id: 'bgm2',
+        name: '《岁月缓缓，我们向前》',
+        artist: '作曲：AI、调试：小龙虾',
+        file: 'bgm/Time flows, we go.mp3',
+        // cover: '🌊',
+        coverImg: 'assets/Time flows, we go.jpg',
+        lyrics: `纯音乐，请欣赏`
+    }
+//     {
+//         id: 'bgm3',
+//         name: '《星空》',
+//         artist: '作曲：AI、调试：小龙虾',
+//         file: 'bgm/stars.mp3',
+//         cover: '🌙',
+//         coverImg: 'assets/cover-bgm3.jpg',
+//         lyrics: `[00:00] 满天星星 像你的眼睛
+// [00:25] 一闪一闪 照亮我的夜
+// [00:50] 我想把这一刻 永远留住`
+//     }
+];
+
+let currentMusicId = 'bgm1';
+let isMusicPlaying = false;
+
+// 渲染歌曲列表
+function renderMusicList() {
+    const container = document.getElementById('musicList');
+    container.innerHTML = musicData.map(song => `
+        <div class="music-item ${song.id === currentMusicId ? 'active' : ''}" data-id="${song.id}">
+            <span class="icon"><img src="${song.coverImg || song.cover}" alt="${song.name}" style="width:36px;height:36px;object-fit:cover;border-radius:8px;"></span>
+            <div class="info">
+                <div class="title">${song.name}</div>
+                <div class="artist">${song.artist}</div>
+            </div>
+            ${song.id === currentMusicId ? '<span class="badge">▶ 播放中</span>' : ''}
+        </div>
+    `).join('');
+
+    // 点击切换歌曲
+    container.querySelectorAll('.music-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const id = this.dataset.id;
+            switchMusic(id);
+        });
+    });
+}
+
+// 切换歌曲
+function switchMusic(id) {
+    const song = musicData.find(s => s.id === id);
+    if (!song) return;
+
+    currentMusicId = id;
+    const audio = document.getElementById('bgm');
+
+    // 更新音频源
+    audio.src = song.file;
+    audio.load();
+
+    // 如果当前是播放状态，继续播放
+    if (isMusicPlaying) {
+        audio.play().catch(() => {});
+    }
+
+    // 更新 UI
+    document.getElementById('musicTitle').textContent = song.name;
+    document.getElementById('musicArtist').textContent = song.artist;
+    const coverEl = document.getElementById('musicCover');
+    if (song.coverImg) {
+        coverEl.innerHTML = `<img src="${song.coverImg}" alt="${song.name}" style="width:52px;height:52px;object-fit:cover;border-radius:12px;">`;
+    } else {
+        coverEl.textContent = song.cover || '🎵';
+    }
+
+    // 更新歌词
+    const lyricsContainer = document.getElementById('lyricsContainer');
+    if (song.lyrics) {
+        lyricsContainer.innerHTML = song.lyrics.replace(/\n/g, '<br>');
+    } else {
+        lyricsContainer.innerHTML = '<div class="lyrics-placeholder">🎵 暂无歌词</div>';
+    }
+
+    // 更新列表高亮
+    document.querySelectorAll('.music-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.id === id);
+        const badge = item.querySelector('.badge');
+        if (item.dataset.id === id) {
+            if (!badge) {
+                const b = document.createElement('span');
+                b.className = 'badge';
+                b.textContent = '▶ 播放中';
+                item.appendChild(b);
+            }
+        } else {
+            if (badge) badge.remove();
+        }
+    });
+
+    // 更新播放按钮状态
+    updatePlayBtn();
+}
+
+// 更新播放按钮
+function updatePlayBtn() {
+    const btn = document.getElementById('musicPlayBtn');
+    if (isMusicPlaying) {
+        btn.textContent = '⏸️';
+    } else {
+        btn.textContent = '▶️';
+    }
+}
+
+// 播放/暂停切换
+document.getElementById('musicPlayBtn').addEventListener('click', function() {
+    const audio = document.getElementById('bgm');
+    if (isMusicPlaying) {
+        audio.pause();
+        isMusicPlaying = false;
+    } else {
+        audio.play().catch(() => {});
+        isMusicPlaying = true;
+    }
+    updatePlayBtn();
+});
+
+// 监听音频播放状态（同步）
+const bgmAudio = document.getElementById('bgm');
+bgmAudio.addEventListener('play', function() {
+    isMusicPlaying = true;
+    updatePlayBtn();
+    // 同步首页 BGM 按钮
+    const homeBtn = document.getElementById('bgmBtn');
+    if (homeBtn) {
+        homeBtn.textContent = '🎵 播放中...';
+        homeBtn.classList.add('playing');
+        document.getElementById('bgmStatus').textContent = '● 正在播放';
+    }
+});
+bgmAudio.addEventListener('pause', function() {
+    isMusicPlaying = false;
+    updatePlayBtn();
+    const homeBtn = document.getElementById('bgmBtn');
+    if (homeBtn) {
+        homeBtn.textContent = '🎵 伴着BGM阅读更好哦';
+        homeBtn.classList.remove('playing');
+        document.getElementById('bgmStatus').textContent = '● 已暂停';
+    }
+});
+
+// 初始化：默认选中第一首
+renderMusicList();
+// 同步当前播放状态
+const defaultSong = musicData.find(s => s.id === currentMusicId);
+if (defaultSong) {
+    document.getElementById('musicTitle').textContent = defaultSong.name;
+    document.getElementById('musicArtist').textContent = defaultSong.artist;
+
+    // ★★★ 关键改动：初始化封面 ★★★
+    const coverEl = document.getElementById('musicCover');
+    if (defaultSong.coverImg) {
+        coverEl.innerHTML = `<img src="${defaultSong.coverImg}" alt="${defaultSong.name}" style="width:52px;height:52px;object-fit:cover;border-radius:12px;">`;
+    } else {
+        coverEl.textContent = defaultSong.cover || '🎵';
+    }
+
+    if (defaultSong.lyrics) {
+        document.getElementById('lyricsContainer').innerHTML = defaultSong.lyrics.replace(/\n/g, '<br>');
+    }
+}
+// 默认不自动播放（由首页逻辑控制），但显示正确状态
+isMusicPlaying = false;
+updatePlayBtn();
+
+console.log('🎵 歌曲板块已加载');
+
+
+// ===== 打开信的放大图 =====
+function openLetterImage(src) {
+    // 如果已经有一个放大的层，先移除（防止重复）
+    const existing = document.getElementById('letter-lightbox');
+    if (existing) existing.remove();
+
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.id = 'letter-lightbox';
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        padding: 30px;
+        cursor: pointer;
+    `;
+
+    // 创建图片
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = `
+        max-width: 92%;
+        max-height: 85vh;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        object-fit: contain;
+        cursor: default;
+    `;
+
+    overlay.appendChild(img);
+
+    // 点击遮罩层关闭
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            this.remove();
+        }
+    });
+
+    // ESC 键关闭
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            const el = document.getElementById('letter-lightbox');
+            if (el) el.remove();
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
+
+    document.body.appendChild(overlay);
+}
+    </script>
+</body>
+</html>

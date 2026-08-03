@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🔐 时光不老 · 验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Segoe UI', Roboto, sans-serif;
+            background: #fcf7f2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .verify-container {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px 32px 36px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(180, 140, 120, 0.12);
+            text-align: center;
+            border: 1px solid rgba(220, 190, 175, 0.08);
+        }
+
+        .verify-icon {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .verify-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3d2c2c;
+            margin-bottom: 4px;
+        }
+
+        .verify-sub {
+            color: #7a6a60;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .verify-input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 1.5px solid #ede0d8;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+            background: #fcf7f2;
+            text-align: center;
+            font-weight: 500;
+            color: #3d2c2c;
+        }
+
+        .verify-input::placeholder {
+            color: rgba(61, 44, 44, 0.35);
+            /* 或者用 opacity: 0.35; 也可以，但 rgba 更精准 */
+        }
+
+        .verify-input:focus {
+            border-color: #dbb8a8;
+            box-shadow: 0 0 0 4px rgba(219, 184, 168, 0.12);
+        }
+
+        .verify-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .verify-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            background: #dbb8a8;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .verify-btn:active {
+            transform: scale(0.97);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .verify-msg {
+            margin-top: 14px;
+            font-size: 14px;
+            color: #e07070;
+            min-height: 22px;
+            transition: 0.2s;
+        }
+
+        .verify-msg.success {
+            color: #7bc0a0;
+        }
+
+        .verify-footer {
+            margin-top: 20px;
+            color: #c0b0a8;
+            font-size: 12px;
+        }
+        .verify-logo {
+        width: 72px;
+        height: auto;
+        display: block;
+        margin: 0 auto 8px;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="verify-container">
+        <img src="assets/logo.png" alt="logo" class="verify-logo">
+        <div class="verify-title">时光不老</div>
+        <div class="verify-sub">输入暗号，进入我们的角落</div>
+
+        <input type="text" class="verify-input" id="passwordInput" placeholder="请输入密码" autofocus style="-webkit-text-security: disc; ">
+        <button class="verify-btn" id="verifyBtn">🔓 解锁</button>
+
+        <div class="verify-msg" id="msgArea"></div>
+        <div class="verify-footer">—— 输错三次会怎样？试试看 ——</div>
+    </div>
+
+    <script>
+        const CORRECT = '时光不老';
+        const MAX_ATTEMPTS = 3;
+        let attempts = 0;
+
+        const input = document.getElementById('passwordInput');
+        const btn = document.getElementById('verifyBtn');
+        const msg = document.getElementById('msgArea');
+
+        function setLocked(locked) {
+            if (locked) {
+                input.disabled = true;
+                btn.disabled = true;
+                input.style.opacity = '0.5';
+            } else {
+                input.disabled = false;
+                btn.disabled = false;
+                input.style.opacity = '1';
+            }
+        }
+
+        function attemptUnlock() {
+            const val = input.value.trim();
+
+            // 如果已经锁定，不处理
+            if (input.disabled) return;
+
+            // 密码正确
+            if (val === CORRECT) {
+                msg.className = 'verify-msg success';
+                msg.textContent = '✅ 欢迎回来';
+                // 直接跳转到首页
+                window.location.href = 'home.html?auth=ok';
+                return;
+            }
+
+            // 密码错误
+            attempts++;
+            const left = MAX_ATTEMPTS - attempts;
+
+            if (left > 0) {
+                msg.className = 'verify-msg';
+                msg.textContent = `❌ 密码不对，还剩 ${left} 次机会`;
+                input.value = '';
+                input.focus();
+            } else {
+                // 第三次错误
+                msg.className = 'verify-msg';
+                msg.textContent = '💬 想想群名~';
+                setLocked(true);
+                // 顺便把输入框内容清空
+                input.value = '';
+            }
+        }
+
+        // 按钮点击
+        btn.addEventListener('click', attemptUnlock);
+
+        // 回车键
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                attemptUnlock();
+            }
+        });
+
+        // 聚焦时如果有错误提示，清空它（但保留锁定状态）
+        input.addEventListener('focus', function() {
+            if (!input.disabled && msg.textContent.startsWith('❌')) {
+                msg.textContent = '';
+            }
+        });
+
+        // 页面加载后自动聚焦
+        window.addEventListener('load', function() {
+            input.focus();
+        });
+
+        console.log('🔐 验证页已加载 · 密码是“时光不老”');
+    </script>
+</body>
+</html>
