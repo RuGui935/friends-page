@@ -1524,7 +1524,6 @@
                     <button class="filter-btn" data-filter="2023">2023</button>
                     <button class="filter-btn" data-filter="2022">2022</button>
                     <button class="filter-btn" data-filter="2021">2021</button>
-                    <button class="filter-btn" data-filter="2020">2020</button>
                     <button class="filter-btn" data-filter="older">更早</button>
                 </div>
                 <div class="filter-group"><span class="filter-label">👤 人数</span>
@@ -1729,6 +1728,19 @@
                         <div class="letter-from">—— 大龙虾 写给 我们</div>
                     </div>
 
+                <div class="letter-list">
+                    <div class="letter-item">
+                        <div class="letter-meta">📅 2022 年 · 夏天</div>
+                        <div class="letter-text">“我们是十年，是120个月，是3650天，是43800个小时，是2628000分钟，是157680000秒，如果我能活到一百岁，你们就是我生命中的十分之一，按人的平均寿命77.9岁来说，你，你们占了我生命中的12.836970475%，今年我十八，占了我生命55.555555555555%，不出意外，可能占到90% @小龙虾 @大龙虾 所以，想好怎么补偿我这些逝去的时光了吗？”</div>
+                         <!-- ===== 信的图片（原图） ===== -->
+                        <div style="margin: 10px auto 6px; text-align: center;">
+                            <img src="assets/letter-2022-3.jpg" alt="2022年写的信"
+                                style="max-width: 200px; width: 60%; height: auto; border-radius: 12px; box-shadow: 0 4px 16px rgba(180,140,120,0.1); border: 1px solid rgba(220,190,175,0.15); cursor: pointer;"
+                                onclick="openLetterImage(this.src)">
+                        </div>
+                        <div class="letter-from">—— 小小龙虾 写给 我们</div>
+                    </div>
+
                     <div class="letter-list">
                     <div class="letter-item">
                         <div class="letter-meta">📅 2022 年 · 冬天</div>
@@ -1885,7 +1897,7 @@
             { src: 'assets/photo/2.jpg', alt: '包车时刻', year: '2024', people: 3, category: 'group', story: '那天我们放完烟花，回去的路上包了一辆车。' },
             { src: 'assets/photo/3.jpeg', alt: '初中合照', year: 'older', people: 3, category: 'group', story: '初中合照。' },
             { src: 'assets/photo/4.jpeg', alt: '小学合照', year: 'older', people: 'multi', category: 'group', story: '小学毕业之前在大校场的合照。' },
-            { src: 'assets/photo/5.jpg', alt: '防洪堤系列', year: '2020', people: 3, category: 'group', story: '那天我们一起在防洪堤上拍了很多照片，以此作为友谊新阶段的开始。' },
+            { src: 'assets/photo/5.jpg', alt: '防洪堤系列', year: 'older', people: 3, category: 'group', story: '那天我们一起在防洪堤上拍了很多照片，以此作为友谊新阶段的开始。' },
             { src: 'assets/photo/6.jpeg', alt: '大佬沉思照', year: '2021', people: 1, category: 'group', story: '无人知道那时的大佬在思考什么————' },
             { src: 'assets/photo/7.jpeg', alt: '防洪堤系列', year: '2020', people: 2, category: 'group', story: '那天阳光正好。' },
             { src: 'assets/photo/8.jpeg', alt: '新年合照！', year: '2022', people: 2, category: 'group', story: '第一次去大佬家里做客，和大佬一起过新年！' },
@@ -1908,18 +1920,54 @@
             { src: 'assets/photo/24.jpeg', alt: '童年回忆打卡', year: '2025', people: 2, category: 'group', story: '深圳巴啦啦小魔仙拍摄地打卡！' },
             { src: 'assets/photo/25.jpeg', alt: '深圳博物馆参观时刻', year: '2025', people: 3, category: 'group', story: '深圳博物馆参观合影！' },
             { src: 'assets/photo/26.jpeg', alt: '深圳火锅时刻', year: '2025', people: 3, category: 'group', story: '深圳火锅餐时刻！' },
+            { src: 'assets/photo/27.jpeg', alt: 'K歌系列', year: '2026', people: 3, category: 'group', story: '2026第一次聚会K歌。' },
+            { src: 'assets/photo/28.jpeg', alt: 'K歌系列', year: '2026', people: 3, category: 'group', story: '26年寒假最后一次聚会，在那个居然并非纯K歌的地方拍了很多照片。' },
+            { src: 'assets/photo/29.jpeg', alt: 'K歌系列', year: '2026', people: 3, category: 'group', story: '26年寒假最后一次聚会，在那个居然并非纯K歌的地方拍了很多照片。（复制粘贴版）' },
+
+            { src: 'assets/photo/30.jpeg', alt: '深圳观海照', year: '2025', people: 2, category: 'group', story: '去深圳看海时，阳光正好。' },
+            { src: 'assets/photo/31.jpeg', alt: '探索童年时', year: '2025', people: 2, category: 'group', story: '去巴啦啦小魔仙拍摄地打卡的路上~' },
+            { src: 'assets/photo/32.jpeg', alt: '探索童年时', year: '2025', people: 2, category: 'group', story: '那会儿我们决定去巴啦啦小魔仙的拍摄地打卡，于是说走就走，这会儿我们刚从地铁出来，走在廊上。' },
+            { src: 'assets/photo/33.jpeg', alt: '大佬帅照', year: '2026', people: 1, category: 'group', story: '看到这里的人跟着大佬一起比手枪指~' },
+            { src: 'assets/photo/34.jpeg', alt: '在电影院与立牌的合照', year: '2023', people: 3, category: 'group', story: '好可爱的三只~' },
+            { src: 'assets/photo/35.jpeg', alt: '圣文园的合照', year: '2023', people: 3, category: 'group', story: '那天我和大佬与大佬妈妈一起去圣文园逛街看风景~' },
+            { src: 'assets/photo/36.jpeg', alt: '新年合照！', year: '2023', people: 3, category: 'group', story: '那天在白云山上的合照！' },
+            { src: 'assets/photo/37.jpeg', alt: '生日合照', year: '2023', people: 3, category: 'group', story: '那天是六月三号，大佬准备了我们的生日礼物，也准备了十年之约的信，我们还一起吃蛋糕吃火锅吹蜡烛，非常热闹开心。' },
+            { src: 'assets/photo/38.jpeg', alt: '探索景点时', year: '2021', people: 3, category: 'group', story: '那天我们一起去李济深故居游览，在亭子里搞怪玩闹拍照~画质堪忧，但好在有些东西未变~' },
+            { src: 'assets/photo/39.jpeg', alt: '特效系列', year: '2021', people: 3, category: 'group', story: '虽然不记得那天在小龙虾旧家都干了什么，但留下了很多特效照纪念~' },
+
+            { src: 'assets/photo/40.jpeg', alt: '初中之时', year: 'older', people: 2, category: 'group', story: '初中时在白云山脚的路上所摄，至今记得大佬说这张照片很好看。' },
+            { src: 'assets/photo/41.jpeg', alt: '稚嫩的三人', year: 'older', people: 3, category: 'group', story: '那会儿也是初中，我剪头发了，拍摄地应该是在防洪堤下面~那会儿我们也许在躲雨。' },
+            { src: 'assets/photo/42.jpeg', alt: '生日时刻', year: 'older', people: 3, category: 'group', story: '那时正是大龙虾与小小龙虾初中毕业的暑假，也正好是小龙虾生日，于是三人聚在小龙虾家里拍摄了很多照片。' },
+            { src: 'assets/photo/43.jpeg', alt: '博物馆时刻', year: '2021', people: 1, category: 'group', story: '那天和大佬一起去逛梧州博物馆，站在新建好的楼梯前拍照。虽然人有点小，但是姿势很舒展开心哦。' },
+            { src: 'assets/photo/44.jpeg', alt: '大佬帅照', year: '2023', people: 1, category: 'group', story: '看到这里和大佬一起比个耶。' },
+            // { src: 'assets/photo/35.jpeg', alt: '圣文园的合照', year: '2023', people: 3, category: 'group', story: '那天我和大佬与大佬妈妈一起去圣文园逛街看风景~' },
+            // { src: 'assets/photo/36.jpeg', alt: '新年合照！', year: '2023', people: 3, category: 'group', story: '那天在白云山上的合照！' },
+            // { src: 'assets/photo/37.jpeg', alt: '生日合照', year: '2023', people: 3, category: 'group', story: '那天是六月三号，大佬准备了我们的生日礼物，也准备了十年之约的信，我们还一起吃蛋糕吃火锅吹蜡烛，非常热闹开心。' },
+            // { src: 'assets/photo/38.jpeg', alt: '探索景点时', year: '2021', people: 3, category: 'group', story: '那天我们一起去李济深故居游览，在亭子里搞怪玩闹拍照~画质堪忧，但好在有些东西未变~' },
+            // { src: 'assets/photo/39.jpeg', alt: '特效系列', year: '2021', people: 3, category: 'group', story: '虽然不记得那天在小龙虾旧家都干了什么，但留下了很多特效照纪念~' },
+
 
 
             // ===== 纪念物 =====
             { src: 'assets/photo/mem1.jpeg', alt: '毕业季Q版', year: '2023', people: 3, category: 'item', story: '高中阶段的结束又让我有了灵感去约稿。' },
             { src: 'assets/photo/mem2.jpeg', alt: '秋千合照Q版', year: '2022', people: 3, category: 'item', story: '突发奇想就约了个稿子。' },
             { src: 'assets/photo/mem3.jpeg', alt: '小木牌', year: '2021', people: 3, category: 'item', story: '突发奇想我就去约了个牌子。' },
-            { src: 'assets/photo/mem4.png', alt: '板写', year: '2023', people: 3, category: 'item', story: '李子点的定制！' },
-            { src: 'assets/photo/mem5.png', alt: '板写', year: '2022', people: 3, category: 'item', story: '李子点的定制！' },
-            { src: 'assets/photo/mem6.png', alt: '板写', year: '2021', people: 3, category: 'item', story: '李子点的定制！' },
+            { src: 'assets/photo/mem4.png', alt: '板写', year: '2023', people: 1, category: 'item', story: '李子点的定制！' },
+            { src: 'assets/photo/mem5.png', alt: '板写', year: '2022', people: 1, category: 'item', story: '李子点的定制！' },
+            { src: 'assets/photo/mem6.png', alt: '板写', year: '2021', people: 1, category: 'item', story: '李子点的定制！' },
             { src: 'assets/photo/mem7.jpeg', alt: '电影时刻', year: '2024', people: 3, category: 'item', story: '熊出没十年之约大电影影票'},
             { src: 'assets/photo/mem8.jpeg', alt: '电影时刻', year: '2023', people: 3, category: 'item', story: '孤注一掷电影影票'},
+            { src: 'assets/photo/mem9.jpg', alt: '电影时刻', year: '2023', people: 3, category: 'item', story: '熊出没之伴我“熊芯”大电影影票'},
+            { src: 'assets/photo/mem10.jpg', alt: '蜜雪冰城雪王不倒翁', year: '2023', people: 3, category: 'item', story: '在迷你K歌房拍的雪王不倒翁。'},
+            { src: 'assets/photo/mem11.png', alt: '烧烤时刻', year: '2023', people: 3, category: 'item', story: '烤串合照。'},
+            { src: 'assets/photo/mem12.jpg', alt: '粘土人', year: '2025', people: 1, category: 'item', story: '接触二次元粘土人定制后突发奇想约的定制，但是选的店铺风格不一样，好难过。'},
+            { src: 'assets/photo/mem13.jpg', alt: '粘土人', year: '2025', people: 1, category: 'item', story: '接触二次元粘土人定制后突发奇想约的定制，但是选的店铺风格不一样，好难过。'},
+            { src: 'assets/photo/mem14.jpg', alt: '粘土人', year: '2024', people: 1, category: 'item', story: '接触二次元粘土人定制后突发奇想约的定制。'},
+            { src: 'assets/photo/mem15.jpeg', alt: '逛景点时刻', year: '2024', people: 2, category: 'item', story: '深圳园山风景区门票。'},
+            { src: 'assets/photo/mem16.jpg', alt: '电影时刻', year: '2025', people: 3, category: 'item', story: '熊出没之重启未来大电影影票。'},
             
+
+
             // ===== 碰杯 =====
             { src: 'assets/photo/cheers1.jpeg', alt: '火锅碰杯', year: '2021', people: 3, category: 'cheers', story: '十月送行餐的碰杯。' },
             { src: 'assets/photo/cheers2.png', alt: '可乐碰杯', year: '2023', people: 3, category: 'cheers', story: '复刻21年十月送行餐' },
@@ -1929,6 +1977,8 @@
             { src: 'assets/photo/cheers6.jpeg', alt: '奶茶碰杯', year: '2024', people: 3, category: 'cheers', story: '那天我们在市政府广场散步、闲聊、碰杯。'},
             { src: 'assets/photo/cheers7.png', alt: '奶茶碰杯', year: '2024', people: 3, category: 'cheers', story: '那日是上了大学后的第一次碰面，我们买了很多小吃到潘塘公园，吹风、闲谈、碰杯。'},
             { src: 'assets/photo/cheers8.jpeg', alt: '牛蛙煲碰杯', year: '2023', people: 3, category: 'cheers', story: '高考之前的最后一顿大餐。'},
+            { src: 'assets/photo/cheers9.jpg', alt: '偶然相聚', year: '2024', people: 2, category: 'cheers', story: '大佬偶然经过南宁，于是小聚片刻。'},
+            { src: 'assets/photo/cheers10.jpg', alt: '重逢相遇', year: '2023', people: 2, category: 'cheers', story: '那次是2023年元旦，相约去KTV（也是第一次去KTV）'},
         ];
 
         // ================================================================
@@ -2106,9 +2156,9 @@
             '☎️ “打电话的时间是100:01，而我们的友谊满分一百。”',
             '☕️ “途有好伴，不觉长远。”',
             '🌸 “再见其实是一句很朴素的愿望，因为喜欢，所以期望下次再见。”',
-            '🌊 “”',
-            '🍜 “”',
-            '📖 “”',
+            '🌊 “未知的另一个名字叫期待。”',
+            '🍜 “於千万人中，幸而相遇。”',
+            '📖 “时光不老，我们不散，未来可期。”',
             '✨ “时间在流逝，我们也在改变，但好在有些东西不会。”'
         ];
         document.getElementById('dailyQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
@@ -2177,8 +2227,12 @@
             });
             
             if (filtered.length === 0) {
-                masonryGrid.innerHTML =
-                    '<p style="grid-column:1/-1;text-align:center;color:var(--text-soft);padding:40px 0;">📭 这个分类还没有照片～</p>';
+                masonryGrid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-soft);">
+                        <div style="font-size:42px;margin-bottom:8px;">📭</div>
+                        <p style="font-size:16px;margin:0;white-space:nowrap;">这个分类还没有照片～</p>
+                    </div>
+                `;
                 return;
             }
             
