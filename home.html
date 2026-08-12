@@ -2302,7 +2302,7 @@
             
             masonryGrid.innerHTML = filtered.map((p, i) => `
                 <div class="masonry-item" data-index="${i}" data-src="${p.src}" data-alt="${p.alt}" data-year="${p.year}" data-people="${p.people}" data-story="${p.story}">
-                    <img src="${p.src}" alt="${p.alt}" loading="lazy" onerror="this.style.display='none'">
+                    <img loading="lazy" src="${p.src}" alt="${p.alt}" loading="lazy" onerror="this.style.display='none'">
                     <div class="masonry-overlay"><span>${p.alt}</span></div>
                 </div>
             `).join('');
